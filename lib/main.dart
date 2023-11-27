@@ -41,6 +41,18 @@ class _UniversityIDState extends State<UniversityID> {
       ],
       avatarPath: 'assets/funky_2.png',
     ),
+    Student(
+      name: 'John Smith',
+      email: 'john.smith@outlook.com',
+      gpa: 2.3,
+      currentSemester: 'Fall 2023',
+      courses: [
+        Course(name: 'BMIS360', creditHours: 3),
+        Course(name: 'BFIN440', creditHours: 4),
+        Course(name: 'MATH210', creditHours: 3),
+      ],
+      avatarPath: 'assets/churro.png',
+    ),
   ];
 
   late Student student;
@@ -95,23 +107,29 @@ class _UniversityIDState extends State<UniversityID> {
         backgroundColor: Colors.teal[400],
         elevation: 0,
         actions: [
-          DropdownButton<Student>(
-            value: student,
-            items: students.map<DropdownMenuItem<Student>>((Student student) {
-              return DropdownMenuItem<Student>(
-                value: student,
-                child: Text(student.name),
-              );
-            }).toList(),
-            onChanged: (Student? newValue) {
-              setState(() {
-                student = newValue!;
-                _nameController.text = student.name;
-                _gpaController.text = student.gpa.toString();
-                _emailController.text = student.email;
-                selectedCourse = null; // Reset selected course
-              });
-            },
+          SizedBox(
+            width: 100,
+            child: DropdownButton<Student>(
+              itemHeight: 48,
+              value: student,
+              isExpanded: true,
+              items: students.map<DropdownMenuItem<Student>>((Student student) {
+                return DropdownMenuItem<Student>(
+                  value: student,
+                  child: Text(student.name, overflow: TextOverflow.ellipsis),
+                );
+              }).toList(),
+              onChanged: (Student? newValue) {
+                setState(() {
+                  student = newValue!;
+                  _nameController.text = student.name;
+                  _gpaController.text = student.gpa.toString();
+                  _emailController.text = student.email;
+                  selectedCourse = null;
+                });
+              },
+              underline: Container(),
+            ),
           ),
           IconButton(
             icon: Icon(_isEditMode ? Icons.check : Icons.edit),
