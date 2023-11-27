@@ -29,6 +29,35 @@ class _UniversityIDState extends State<UniversityID> {
   );
 
   Course? selectedCourse;
+  bool _isEditMode = false;
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _gpaController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = student.name;
+    _gpaController.text = student.gpa.toString();
+    _emailController.text = student.email;
+  }
+
+  void _toggleEditMode() {
+    setState(() {
+      _isEditMode = !_isEditMode;
+      if (!_isEditMode) {
+        _saveEdits();
+      }
+    });
+  }
+
+  void _saveEdits() {
+    setState(() {
+      student.name = _nameController.text;
+      student.gpa = double.tryParse(_gpaController.text) ?? student.gpa;
+      student.email = _emailController.text;
+    });
+  }
 
   void _dropCourse(Course course) {
     setState(() {
@@ -48,6 +77,12 @@ class _UniversityIDState extends State<UniversityID> {
         centerTitle: true,
         backgroundColor: Colors.teal[400],
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(_isEditMode ? Icons.check : Icons.edit),
+            onPressed: _toggleEditMode,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -72,14 +107,14 @@ class _UniversityIDState extends State<UniversityID> {
                 ),
               ),
               SizedBox(height: 10),
-              Text(student.name,
-                style: TextStyle(
-                  color: Colors.blue,
-                  letterSpacing: 2,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              _isEditMode
+                  ? TextField(
+                controller: _nameController,
+                style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(labelText: 'Name', labelStyle: TextStyle(color: Colors.white)),
+              )
+                  : Text(student.name,
+                  style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold)),
               SizedBox(height: 30),
               Text('CURRENT GPA:',
                 style: TextStyle(
@@ -88,16 +123,30 @@ class _UniversityIDState extends State<UniversityID> {
                 ),
               ),
               SizedBox(height: 10),
-              Text('${student.gpa.toStringAsFixed(2)}',
+              _isEditMode
+                  ? TextField(
+                controller: _gpaController,
+                style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(labelText: 'GPA', labelStyle: TextStyle(color: Colors.white)),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              )
+                  : Text('${student.gpa.toStringAsFixed(2)}',
+                  style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold)),
+              SizedBox(height: 30),
+              Text('EMAIL:',
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Colors.white,
                   letterSpacing: 2,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 30),
-              Row(
+              SizedBox(height: 10),
+              _isEditMode
+                  ? TextField(
+                controller: _emailController,
+                style: TextStyle(color: Colors.grey[400], fontSize: 18),
+                decoration: InputDecoration(labelText: 'Email', labelStyle: TextStyle(color: Colors.white)),
+              )
+                  : Row(
                 children: [
                   Icon(
                     Icons.email,
