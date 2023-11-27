@@ -1,4 +1,3 @@
-// course.dart
 class Course {
   String name;
   int creditHours;

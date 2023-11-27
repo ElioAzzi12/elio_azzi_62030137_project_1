@@ -16,18 +16,34 @@ class UniversityID extends StatefulWidget {
 }
 
 class _UniversityIDState extends State<UniversityID> {
-  Student student = Student(
-    name: 'Elio Azzi',
-    email: '62030137@students.li.edu.lb',
-    gpa: 3.5,
-    currentSemester: 'Fall 2023',
-    courses: [
-      Course(name: 'Mathematics', creditHours: 3),
-      Course(name: 'Physics', creditHours: 4),
-      Course(name: 'Computer Science', creditHours: 3),
-    ],
-  );
+  List<Student> students = [
+    Student(
+      name: 'Elio Azzi',
+      email: 'elio.azzi@hotmail.com',
+      gpa: 3.5,
+      currentSemester: 'Fall 2023',
+      courses: [
+        Course(name: 'CSIT420', creditHours: 3),
+        Course(name: 'CSCI360', creditHours: 4),
+        Course(name: 'BMIS350', creditHours: 3),
+      ],
+      avatarPath: 'assets/funky_1.png',
+    ),
+    Student(
+      name: 'Rebecca Khachan',
+      email: 'rebecca.khachan@gmail.com',
+      gpa: 3.7,
+      currentSemester: 'Fall 2023',
+      courses: [
+        Course(name: 'BMIS360', creditHours: 3),
+        Course(name: 'BFIN440', creditHours: 4),
+        Course(name: 'MATH210', creditHours: 3),
+      ],
+      avatarPath: 'assets/funky_2.png',
+    ),
+  ];
 
+  late Student student;
   Course? selectedCourse;
   bool _isEditMode = false;
   TextEditingController _nameController = TextEditingController();
@@ -37,6 +53,7 @@ class _UniversityIDState extends State<UniversityID> {
   @override
   void initState() {
     super.initState();
+    student = students.first; // Initially select the first student
     _nameController.text = student.name;
     _gpaController.text = student.gpa.toString();
     _emailController.text = student.email;
@@ -78,6 +95,24 @@ class _UniversityIDState extends State<UniversityID> {
         backgroundColor: Colors.teal[400],
         elevation: 0,
         actions: [
+          DropdownButton<Student>(
+            value: student,
+            items: students.map<DropdownMenuItem<Student>>((Student student) {
+              return DropdownMenuItem<Student>(
+                value: student,
+                child: Text(student.name),
+              );
+            }).toList(),
+            onChanged: (Student? newValue) {
+              setState(() {
+                student = newValue!;
+                _nameController.text = student.name;
+                _gpaController.text = student.gpa.toString();
+                _emailController.text = student.email;
+                selectedCourse = null; // Reset selected course
+              });
+            },
+          ),
           IconButton(
             icon: Icon(_isEditMode ? Icons.check : Icons.edit),
             onPressed: _toggleEditMode,
@@ -92,7 +127,7 @@ class _UniversityIDState extends State<UniversityID> {
             children: [
               Center(
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/churro.png'),
+                  backgroundImage: AssetImage(student.avatarPath),
                   radius: 40,
                 ),
               ),
@@ -100,7 +135,8 @@ class _UniversityIDState extends State<UniversityID> {
                 height: 60,
                 color: Colors.white,
               ),
-              Text('NAME',
+              Text(
+                'NAME',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 2,
@@ -110,13 +146,27 @@ class _UniversityIDState extends State<UniversityID> {
               _isEditMode
                   ? TextField(
                 controller: _nameController,
-                style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold),
-                decoration: InputDecoration(labelText: 'Name', labelStyle: TextStyle(color: Colors.white)),
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
               )
-                  : Text(student.name,
-                  style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold)),
+                  : Text(
+                student.name,
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               SizedBox(height: 30),
-              Text('CURRENT GPA:',
+              Text(
+                'CURRENT GPA:',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 2,
@@ -126,14 +176,28 @@ class _UniversityIDState extends State<UniversityID> {
               _isEditMode
                   ? TextField(
                 controller: _gpaController,
-                style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold),
-                decoration: InputDecoration(labelText: 'GPA', labelStyle: TextStyle(color: Colors.white)),
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+                decoration: InputDecoration(
+                  labelText: 'GPA',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               )
-                  : Text('${student.gpa.toStringAsFixed(2)}',
-                  style: TextStyle(color: Colors.blue, fontSize: 28, fontWeight: FontWeight.bold)),
+                  : Text(
+                '${student.gpa.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               SizedBox(height: 30),
-              Text('EMAIL:',
+              Text(
+                'EMAIL:',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 2,
@@ -143,8 +207,14 @@ class _UniversityIDState extends State<UniversityID> {
               _isEditMode
                   ? TextField(
                 controller: _emailController,
-                style: TextStyle(color: Colors.grey[400], fontSize: 18),
-                decoration: InputDecoration(labelText: 'Email', labelStyle: TextStyle(color: Colors.white)),
+                style: TextStyle(
+                  color: Colors.grey[400],
+                  fontSize: 18,
+                ),
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
               )
                   : Row(
                 children: [
@@ -164,14 +234,16 @@ class _UniversityIDState extends State<UniversityID> {
                 ],
               ),
               SizedBox(height: 30),
-              Text('Current Semester: ${student.currentSemester}',
+              Text(
+                'Current Semester: ${student.currentSemester}',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 2,
                 ),
               ),
               SizedBox(height: 20),
-              Text('Select Course:',
+              Text(
+                'Select Course:',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 2,
@@ -179,7 +251,8 @@ class _UniversityIDState extends State<UniversityID> {
               ),
               DropdownButton<Course>(
                 value: selectedCourse,
-                hint: Text('Choose a course',
+                hint: Text(
+                  'Choose a course',
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -187,7 +260,8 @@ class _UniversityIDState extends State<UniversityID> {
                 items: student.courses.map<DropdownMenuItem<Course>>((Course course) {
                   return DropdownMenuItem<Course>(
                     value: course,
-                    child: Text(course.name,
+                    child: Text(
+                      course.name,
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -205,13 +279,15 @@ class _UniversityIDState extends State<UniversityID> {
                   ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Selected Course: ${selectedCourse!.name}',
+                  Text(
+                    'Selected Course: ${selectedCourse!.name}',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
                   ),
-                  Text('Credits: ${selectedCourse!.creditHours}',
+                  Text(
+                    'Credits: ${selectedCourse!.creditHours}',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,

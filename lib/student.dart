@@ -1,4 +1,3 @@
-// student.dart
 import 'course.dart';
 
 class Student {
@@ -7,6 +6,7 @@ class Student {
   double gpa;
   String currentSemester;
   List<Course> courses;
+  String avatarPath;
 
   Student({
     required this.name,
@@ -14,5 +14,6 @@ class Student {
     required this.gpa,
     required this.currentSemester,
     required this.courses,
+    required this.avatarPath,
   });
 }
